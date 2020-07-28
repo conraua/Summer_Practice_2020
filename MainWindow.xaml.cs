@@ -12,10 +12,18 @@ namespace SummerPractice2020
     public partial class MainWindow
     {
         private bool darkTheme = false;
+        private bool fullScreen = false;
         
         public MainWindow()
         {
             InitializeComponent();
+            grayColorMenuItem.Icon = new Ellipse()
+            {
+                Stroke = Brushes.Black,
+                Fill = Brushes.Black,
+                Width = 5,
+                Height = 5
+            };
         }
         
         private static readonly Regex _regex = new Regex("[^0-9.]+");
@@ -35,9 +43,25 @@ namespace SummerPractice2020
             
         }
         
-        private void View_OnClick(object sender, RoutedEventArgs e)
+        private void FullScreen_OnClick(object sender, RoutedEventArgs e) //TODO change canvas size
         {
-            
+            if (fullScreen)
+            {
+                mainWindow.WindowState = WindowState.Normal;
+                fullScreenMenuItem.Icon = null;
+            }
+            else
+            {
+                mainWindow.WindowState = WindowState.Maximized;
+                fullScreenMenuItem.Icon = new Ellipse()
+                {
+                    Stroke = Brushes.Black,
+                    Fill = Brushes.Black,
+                    Width = 5,
+                    Height = 5
+                };
+            }
+            fullScreen = !fullScreen;
         }
         
         private void DarkTheme_OnClick(object sender, RoutedEventArgs e)
@@ -59,6 +83,26 @@ namespace SummerPractice2020
                 };
             }
             darkTheme = !darkTheme;
+        }
+        
+        private void GrayColor_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+        
+        private void RedColor_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+        
+        private void GreenColor_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+        
+        private void BlueColor_OnClick(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

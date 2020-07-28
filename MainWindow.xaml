@@ -15,7 +15,7 @@
     <StackPanel>
         <Menu>
             <MenuItem Header="Файл">
-                <MenuItem Header="1"></MenuItem>
+                <MenuItem Header="Открыть файл"></MenuItem>
                 <MenuItem Header="2"></MenuItem>
                 <MenuItem Header="3"></MenuItem>
             </MenuItem>
@@ -23,7 +23,23 @@
                 <MenuItem x:Name="darkThemeMenuItem"
                           Header="Темная тема"
                           Click="DarkTheme_OnClick"/>
-                <MenuItem Header=""></MenuItem>
+                <MenuItem x:Name="fullScreenMenuItem"
+                          Header="Полноэкранный режим"
+                          Click="FullScreen_OnClick"/>
+                <MenuItem Header="Цвет отрисовки">
+                    <MenuItem x:Name="grayColorMenuItem"
+                              Header="Серый"
+                              Click="GrayColor_OnClick"/>
+                    <MenuItem x:Name="redColorMenuItem"
+                              Header="Красный"
+                              Click="RedColor_OnClick"/>
+                    <MenuItem x:Name="greenColorMenuItem"
+                              Header="Зеленый"
+                              Click="GreenColor_OnClick"/>
+                    <MenuItem x:Name="blueColorMenuItem"
+                              Header="Синий"
+                              Click="BlueColor_OnClick"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Справка"
                       Click="Info_OnClick"></MenuItem>
