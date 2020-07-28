@@ -1,9 +1,19 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using static SummerPractice2020.Value;
+using static SummerPractice2020.Values;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 namespace SummerPractice2020
 {
@@ -17,6 +27,7 @@ namespace SummerPractice2020
         private bool infoShown = false;
         private string colorMode = "Gray";
         private float rayPower = 1;
+        private Values values = new Values();
         public MainWindow()
         {
             InitializeComponent();
@@ -143,7 +154,21 @@ namespace SummerPractice2020
             }
             fullScreen = !fullScreen;
         }
-        
+
+        private void OpenFile_OnClick(object sender, RoutedEventArgs e) {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true) {
+                
+                string path = openFileDialog.FileName;
+                if (File.Exists(path) == true) {
+                    string json = File.ReadAllText(path);
+                    var structure = JsonConvert.DeserializeObject<List<Tuple<Tuple<int, int>, List<Value>>>>(json);
+                    
+
+                }
+            }
+        }
+
         private void DarkTheme_OnClick(object sender, RoutedEventArgs e)
         {
             if (darkTheme)

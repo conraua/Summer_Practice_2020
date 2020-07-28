@@ -15,8 +15,10 @@
     <StackPanel>
         <Menu>
             <MenuItem Header="Файл">
-                <MenuItem Header="Открыть файл"></MenuItem>
-                <MenuItem Header="Сохранить файл"></MenuItem>
+                <MenuItem x:Name="openFileMenuItem"
+                          Header="Открыть файл"
+                          Click="OpenFile_OnClick"/>
+                <MenuItem Header="Сохранить файл"/>
             </MenuItem>
             <MenuItem Header="Вид">
                 <MenuItem x:Name="darkThemeMenuItem"
