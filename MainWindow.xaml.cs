@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -13,8 +14,9 @@ namespace SummerPractice2020
     {
         private bool darkTheme = false;
         private bool fullScreen = false;
+        private bool infoShown = false;
         private string colorMode = "Gray";
-
+        private float rayPower = 1;
         public MainWindow()
         {
             InitializeComponent();
@@ -35,7 +37,7 @@ namespace SummerPractice2020
             ellipse.Width = width;
             ellipse.Height = width;
             
-            ellipse.StrokeThickness = 4;
+            ellipse.StrokeThickness = 1;
             Color color = new Color();
             color.A = 255;
             switch (colorMode) {
@@ -55,15 +57,16 @@ namespace SummerPractice2020
                     color.B = shade;
                     break;
                 default:
-                    color.R = shade;
-                    color.G = shade;
-                    color.B = shade;
+                    color.R = (byte)(255 - shade);
+                    color.G = (byte)(255 - shade);
+                    color.B = (byte)(255 - shade);
                     break;
             }
             
             Brush brush = new SolidColorBrush(color);
             ellipse.Stroke = brush;
-            ellipse.Margin = new Thickness(point.X - (width / 2), point.Y - (width / 2), 0, 0);
+            ellipse.Fill = brush;
+            ellipse.Margin = new Thickness(point.X - (width / 2.0), point.Y - (width / 2.0), 0, 0);
             
             canvas.Children.Add(ellipse);
         }
@@ -100,8 +103,24 @@ namespace SummerPractice2020
             e.Handled = !IsTextAllowed(e.Text);
         }
 
-        private void Info_OnClick(object sender, RoutedEventArgs e) {
-            Svaston(50, 200);
+        private void Info_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!infoShown)
+            {
+                Svaston(50, 255);
+            }
+            else
+            {
+                canvas.Children.Clear();
+                Ellipse ellipse = new Ellipse();
+                ellipse.Width = 400;
+                ellipse.Height = 400;
+                ellipse.Stroke = Brushes.Black;
+                ellipse.Fill = Brushes.Snow;
+                ellipse.Margin = new Thickness(50);
+                canvas.Children.Add(ellipse);
+            }
+            infoShown = !infoShown;
         }
         
         private void FullScreen_OnClick(object sender, RoutedEventArgs e) //TODO change canvas size
@@ -148,22 +167,68 @@ namespace SummerPractice2020
         
         private void GrayColor_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            grayColorMenuItem.Icon = new Ellipse()
+            {
+                Stroke = Brushes.Black,
+                Fill = Brushes.Black,
+                Width = 5,
+                Height = 5
+            };
+            redColorMenuItem.Icon = null;
+            greenColorMenuItem.Icon = null;
+            blueColorMenuItem.Icon = null;
+            colorMode = "Gray";
         }
         
         private void RedColor_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            grayColorMenuItem.Icon = null;
+            redColorMenuItem.Icon = new Ellipse()
+            {
+                Stroke = Brushes.Black,
+                Fill = Brushes.Black,
+                Width = 5,
+                Height = 5
+            };
+            greenColorMenuItem.Icon = null;
+            blueColorMenuItem.Icon = null;
+            colorMode = "Red";
         }
         
         private void GreenColor_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            grayColorMenuItem.Icon = null;
+            redColorMenuItem.Icon = null;
+            greenColorMenuItem.Icon = new Ellipse()
+            {
+                Stroke = Brushes.Black,
+                Fill = Brushes.Black,
+                Width = 5,
+                Height = 5
+            };
+            blueColorMenuItem.Icon = null;
+            colorMode = "Green";
         }
         
         private void BlueColor_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            grayColorMenuItem.Icon = null;
+            redColorMenuItem.Icon = null;
+            greenColorMenuItem.Icon = null;
+            blueColorMenuItem.Icon = new Ellipse()
+            {
+                Stroke = Brushes.Black,
+                Fill = Brushes.Black,
+                Width = 5,
+                Height = 5
+            };
+            colorMode = "Blue";
+        }
+
+        private void ConfirmButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            rayPower = float.Parse(rayPowerTextBox.Text);
+            rayPowerTextBox.Text = "";
         }
     }
 }
