@@ -9,8 +9,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Microsoft.Win32;
-using static SummerPractice2020.Value;
-using static SummerPractice2020.Values;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -27,7 +25,8 @@ namespace SummerPractice2020
         private bool infoShown = false;
         private string colorMode = "Gray";
         private float rayPower = 1;
-        private Values values = new Values();
+        private static readonly Regex _regex = new Regex("[^0-9.]+");
+        private Dictionary<MyPoint, List<Value>> valuesDictionary = new Dictionary<MyPoint, List<Value>>();
         public MainWindow()
         {
             InitializeComponent();
@@ -39,10 +38,9 @@ namespace SummerPractice2020
                 Height = 5
             };
         }
-        
-        private static readonly Regex _regex = new Regex("[^0-9.]+");
 
-        public void DrawPoint(int x, int y, int width, byte shade) {
+        public void DrawPoint(int x, int y, int width, byte shade) 
+        {
             Point point = new Point(x, y);
             Ellipse ellipse = new Ellipse();
             ellipse.Width = width;
@@ -82,7 +80,8 @@ namespace SummerPractice2020
             canvas.Children.Add(ellipse);
         }
 
-        public void Svaston(int width, byte shade) {
+        public void Svaston(int width, byte shade) 
+        {
             for (int i = 150; i < 350; i++) {
                 DrawPoint(250, i, width, shade);
             }
@@ -155,16 +154,25 @@ namespace SummerPractice2020
             fullScreen = !fullScreen;
         }
 
-        private void OpenFile_OnClick(object sender, RoutedEventArgs e) {
+        private void OpenFile_OnClick(object sender, RoutedEventArgs e) 
+        {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true) {
                 
                 string path = openFileDialog.FileName;
-                if (File.Exists(path) == true) {
+                if (File.Exists(path)) {
                     string json = File.ReadAllText(path);
-                    var structure = JsonConvert.DeserializeObject<List<Tuple<Tuple<int, int>, List<Value>>>>(json);
-                    
-
+                    var deserializedJSON = JsonConvert.DeserializeObject<Values>(json);
+                    var valList = new List<Value>();
+                    foreach (var entry in deserializedJSON.inputArray)
+                    {
+                        valList.Clear();
+                        foreach (var val in entry.valueArray)
+                        {
+                            valList.Add(val);
+                        }
+                        valuesDictionary.Add(entry.coord, valList);
+                    }
                 }
             }
         }
