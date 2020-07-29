@@ -272,11 +272,27 @@ namespace SummerPractice2020
             Values = id.IndicatorValues;
             stepX = 400 / id.Nx;
             stepY = 400 / id.Ny;
+            double minValue = double.MaxValue;
+            double maxValue = Double.MinValue;
+            foreach (var list in Values)
+            {
+                if (list.Min() < minValue)
+                {
+                    minValue = list.Min();
+                }
+
+                if (list.Max() > maxValue)
+                {
+                    maxValue = list.Max();
+                }
+            }
             for (int i = 0; i < 400; i += stepX)
             {
                 for (int j = 0; j < 400; j += stepY)
                 {
-                    DrawPoint(i - 200, j - 200, 2, 255);
+                    double val = Values[i][j] - minValue;
+                    byte shade = (byte)(255 * val / (maxValue - minValue));
+                    DrawPoint(i - 200, j - 200, 2, shade);
                 }
             }
         }

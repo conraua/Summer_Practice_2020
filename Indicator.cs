@@ -54,10 +54,10 @@ namespace SummerPractice2020
                 List<double> tmp = new List<double>();
                 for (int j = (int)Math.Truncate(-Ny / 2.0); j < (int)Math.Truncate(Ny / 2.0); j++)
                 {
-                    double x = i / (double) Nx;
-                    double y = j / (double) Ny;
+                    double x = i / (Nx / 2.0);
+                    double y = j / (Ny / 2.0);
                     Pair r = new Pair(x, y);
-                    if ((x * x) + (y * y) < (int) Math.Truncate(Nx / 2.0) * (int) Math.Truncate(Ny / 2.0))
+                    if ((x * x) + (y * y) < 1)
                     {
                         tmp.Add(Ind(r));
                     }
