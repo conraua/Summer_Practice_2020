@@ -26,7 +26,7 @@ namespace SummerPractice2020
         private string colorMode = "Gray";
         private float rayPower = 1;
         private static readonly Regex _regex = new Regex("[^0-9.]+");
-        private Dictionary<MyPoint, List<Value>> valuesDictionary = new Dictionary<MyPoint, List<Value>>();
+        private List<List<double>> H = new List<List<double>>();
         public MainWindow()
         {
             InitializeComponent();
@@ -162,17 +162,7 @@ namespace SummerPractice2020
                 string path = openFileDialog.FileName;
                 if (File.Exists(path)) {
                     string json = File.ReadAllText(path);
-                    var deserializedJSON = JsonConvert.DeserializeObject<Values>(json);
-                    var valList = new List<Value>();
-                    foreach (var entry in deserializedJSON.inputArray)
-                    {
-                        valList.Clear();
-                        foreach (var val in entry.valueArray)
-                        {
-                            valList.Add(val);
-                        }
-                        valuesDictionary.Add(entry.coord, valList);
-                    }
+                    H = JsonConvert.DeserializeObject<List<List<double>>>(json);
                 }
             }
         }
