@@ -54,16 +54,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" Margin="10, 30, 0, 0">
-                <TextBlock Text="Введите мощность излучателя"/>
-                <TextBox x:Name="rayPowerTextBox"
-                         Margin="0, 20, 0, 0"
-                         Width="50"
-                         Height="20"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Top"
-                         PreviewTextInput="PreviewText"/>
                 <Button x:Name="confirmButton"
-                        Margin="60, 20, 0, 0"
+                        Margin="0, 20, 0, 0"
                         Width="50"
                         Height="20"
                         HorizontalAlignment="Left"

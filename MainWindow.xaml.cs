@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,13 +26,9 @@ namespace SummerPractice2020
         private bool infoShown = false;
         private bool meshDrawn = false;
         private string colorMode = "Gray";
-        private double rayPower = 1;
-        private int Nx = 100;
-        private int Ny = 100;
-        private int stepX;
-        private int stepY;
-        private static readonly Regex _regex = new Regex("[^0-9.]+");
-        private List<List<double>> H = new List<List<double>>();
+        private int stepX = 4;
+        private int stepY = 4;
+        private List<List<double>> Values = new List<List<double>>();
         public MainWindow()
         {
             InitializeComponent();
@@ -42,11 +39,9 @@ namespace SummerPractice2020
                 Width = 5,
                 Height = 5
             };
-            stepX = 400 / Nx;
-            stepY = 400 / Ny;
         }
 
-        public void DrawPoint(int x, int y, int width, byte shade) 
+        public void DrawPoint(int x, int y, int width, byte shade)
         {
             if (x*x + y*y <= 40000)
             {
@@ -89,16 +84,6 @@ namespace SummerPractice2020
 
                 canvas.Children.Add(ellipse);
             }
-        }
-        
-        private static bool IsTextAllowed(string text)
-        {
-            return !_regex.IsMatch(text);
-        }
-
-        private void PreviewText(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !IsTextAllowed(e.Text);
         }
 
         private void ClearCanvas()
@@ -149,7 +134,6 @@ namespace SummerPractice2020
                 drawMeshMenuItem.Icon = null;
                 ClearCanvas();
             }
-
             meshDrawn = !meshDrawn;
         }
 
@@ -182,7 +166,7 @@ namespace SummerPractice2020
                 string path = openFileDialog.FileName;
                 if (File.Exists(path)) {
                     string json = File.ReadAllText(path);
-                    H = JsonConvert.DeserializeObject<List<List<double>>>(json);
+                    Values = JsonConvert.DeserializeObject<List<List<double>>>(json);
                 }
             }
         }
@@ -270,8 +254,31 @@ namespace SummerPractice2020
 
         private void ConfirmButton_OnClick(object sender, RoutedEventArgs e)
         {
-            rayPower = float.Parse(rayPowerTextBox.Text);
-            rayPowerTextBox.Text = "";
+            Tomograph tm = new Tomograph();
+            tm.CalculateRadiationDensity();
+            string output = JsonConvert.SerializeObject(tm.H);
+            byte[] fileout = new byte[output.Length];
+            int k = 0;
+            foreach (var letter in output)
+            {
+                fileout[k] = (byte)letter;
+                k++;
+            }
+            var file = File.Create("2.json");
+            file.Write(fileout, 0, output.Length);
+            
+            Indicator id = new Indicator(tm);
+            id.CalculateHeterogenityIndicator();
+            Values = id.IndicatorValues;
+            stepX = 400 / id.Nx;
+            stepY = 400 / id.Ny;
+            for (int i = 0; i < 400; i += stepX)
+            {
+                for (int j = 0; j < 400; j += stepY)
+                {
+                    DrawPoint(i - 200, j - 200, 2, 255);
+                }
+            }
         }
     }
 }
