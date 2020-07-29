@@ -27,6 +27,9 @@
                 <MenuItem x:Name="fullScreenMenuItem"
                           Header="Полноэкранный режим"
                           Click="FullScreen_OnClick"/>
+                <MenuItem x:Name="drawMeshMenuItem"
+                          Header="Отобразить сетку"
+                          Click="DrawMesh_OnClick"/>
                 <MenuItem Header="Цвет отрисовки">
                     <MenuItem x:Name="grayColorMenuItem"
                               Header="Серый"
