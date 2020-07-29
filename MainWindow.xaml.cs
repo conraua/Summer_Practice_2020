@@ -273,28 +273,42 @@ namespace SummerPractice2020
             stepX = 400 / id.Nx;
             stepY = 400 / id.Ny;
             double minValue = double.MaxValue;
-            double maxValue = Double.MinValue;
-            foreach (var list in Values)
+            double maxValue = double.MinValue;
+            for (int i = 0; i < Values.Count; i++)
             {
-                if (list.Min() < minValue)
+                for (int j = 0; j < Values[i].Count; j++)
                 {
-                    minValue = list.Min();
-                }
-
-                if (list.Max() > maxValue)
-                {
-                    maxValue = list.Max();
+                    if (Values[i][j] < minValue)
+                    {
+                        minValue = Values[i][j];
+                    }
+                    if (Values[i][j] > maxValue)
+                    {
+                        maxValue = Values[i][j];
+                    }
                 }
             }
-            for (int i = 0; i < 400; i += stepX)
+
+            for (int i = 0; i < Values.Count; i++)
             {
-                for (int j = 0; j < 400; j += stepY)
+                for (int j = 0; j < Values[i].Count; j++)
                 {
                     double val = Values[i][j] - minValue;
-                    byte shade = (byte)(255 * val / (maxValue - minValue));
-                    DrawPoint(i - 200, j - 200, 2, shade);
+                    byte shade = (byte) (255 * val / (maxValue - minValue));
+                    DrawPoint(j + (400 - Values[i].Count / 2), i * 4 - 200, 4, shade);
                 }
             }
+            // for (int i = -200; i < 200; i += stepX)
+            // {
+            //     for (int j = -200; j < 200; j += stepY)
+            //     {
+            //         int n = (i + 200) / stepX;
+            //         int m = (j + 200) / stepY;
+            //         double val = Values[n][m] - minValue;
+            //         byte shade = (byte) (255 * val / (maxValue - minValue));
+            //         DrawPoint(i, j, 2, shade);
+            //     }
+            // }
         }
     }
 }

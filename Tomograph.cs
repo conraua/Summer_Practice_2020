@@ -51,8 +51,8 @@ namespace SummerPractice2020
 
         public double Mu(Pair r)
         {
-            //if (Math.Pow((r.x - 0.5), 2) + Math.Pow((r.y - 0.5), 2) - 0.04 <= 0)
-            if (r.x > -0.2 && r.x < 0.2 && r.y > -0.2 && r.y < 0.2)
+            if (Math.Pow((r.x - 0.5), 2) + Math.Pow((r.y - 0.5), 2) - 0.04 <= 0)
+            // if (r.x > -0.2 && r.x < 0.2 && r.y > -0.2 && r.y < 0.2)
             {
                 return 1.53;
             }

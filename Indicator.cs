@@ -25,7 +25,7 @@ namespace SummerPractice2020
             }
         }
 
-        public Indicator(Tomograph tm, int Nx1 = 400, int Ny1 = 400)
+        public Indicator(Tomograph tm, int Nx1 = 100, int Ny1 = 100)
         {
             Nphi = tm.Nphi;
             Nr = tm.Nr;
@@ -41,7 +41,7 @@ namespace SummerPractice2020
             for (int j = 0; j < Nphi; j++)
             {
                 S = r.x * Math.Cos(2 * Math.PI * j / Nphi) + r.y * Math.Sin(2 * Math.PI * j / Nphi);
-                index = ((int)(Math.Round(S * Nr)) + Nr) % (2 * Nr + 1);
+                index = (int) (Math.Round(S * Nr)) + Nr;
                 sum += Hgrad[j][index];
             }
             return sum;
@@ -49,10 +49,10 @@ namespace SummerPractice2020
 
         public void CalculateHeterogenityIndicator()
         {
-            for (int i = (int)Math.Truncate(-Nx / 2.0); i < (int)Math.Truncate(Nx / 2.0); i++)
+            for (int i = -Nx / 2; i < Nx / 2; i++)
             {
                 List<double> tmp = new List<double>();
-                for (int j = (int)Math.Truncate(-Ny / 2.0); j < (int)Math.Truncate(Ny / 2.0); j++)
+                for (int j = -Ny / 2; j < Ny / 2; j++)
                 {
                     double x = i / (Nx / 2.0);
                     double y = j / (Ny / 2.0);
