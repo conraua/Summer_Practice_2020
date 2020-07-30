@@ -81,10 +81,6 @@
                 <TextBlock x:Name="txtBlock4"
                            Visibility="Collapsed"
                            Margin="100, 150, 0, 0"/>
-                <TextBlock x:Name="txtBlock5"
-                           Text="Радиус: "
-                           Visibility="Collapsed"
-                           Margin="200, 150, 0, 0"/>
                 <TextBox x:Name="txtBox1"
                          Height="20"
                          Width="30"
@@ -113,13 +109,6 @@
                          Text="0,0"
                          Visibility="Collapsed"
                          PreviewTextInput="PosNum_OnPreviewTextInput"/>
-                <TextBox x:Name="txtBox5"
-                         Height="20"
-                         Width="30"
-                         Margin="140, -140, 0, 0"
-                         Text="0,0"
-                         Visibility="Collapsed"
-                         PreviewTextInput="PosNum_OnPreviewTextInput"/>
                 <Button x:Name="confirmButton"
                         Margin="0, 300, 0, 0"
                         Width="50"
@@ -129,7 +118,7 @@
                         Content="ОК"
                         Click="ConfirmButton_OnClick"/>
                 <Button x:Name="figureConfirmButton"
-                        Margin="0, 200, 0, 0"
+                        Margin="0, 210, 0, 0"
                         Width="70"
                         Height="20"
                         HorizontalAlignment="Left"
@@ -151,6 +140,11 @@
                              Stroke="Black"
                              Fill="Snow"/>
                 </Canvas>
+                <Button Margin="0, 500, 0, 0"
+                        Height="20"
+                        Width="60"
+                        Content="Очистить"
+                        Click="ClearButton_OnClick"/>
             </Grid>
         </Grid>
     </StackPanel>

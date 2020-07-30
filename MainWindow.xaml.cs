@@ -238,7 +238,6 @@ namespace SummerPractice2020
 
         private void ConfirmButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ClearCanvas();
             tm.CalculateRadiationDensity();
             string output = JsonConvert.SerializeObject(tm.H);
             byte[] fileout = new byte[output.Length];
@@ -286,7 +285,7 @@ namespace SummerPractice2020
 
         private void FigureConfirmButton_OnClick(object sender, RoutedEventArgs e)
         {
-            double x = 0.0, y = 0.0, a = 0.0, b = 0.0, r = 0.0;
+            double x = 0.0, y = 0.0, a = 0.0, b = 0.0;
             if (txtBox1.Text != "")
             {
                 x = double.Parse(txtBox1.Text);
@@ -327,21 +326,10 @@ namespace SummerPractice2020
                     return;
                 }
             }
-            if (txtBox5.Text != "")
-            {
-                r = double.Parse(txtBox5.Text);
-                if (r < -1 || r > 1)
-                {
-                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                    return;
-                }
-            }
             this.figure.x = x;
-            this.figure.y = y;
+            this.figure.y = -y;
             this.figure.a = a;
             this.figure.b = b;
-            this.figure.r = r;
             tm.figure = this.figure;
         }
 
@@ -356,12 +344,10 @@ namespace SummerPractice2020
                     txtBlock3.Visibility = Visibility.Visible;
                     txtBlock4.Text = "Ширина: ";
                     txtBlock4.Visibility = Visibility.Visible;
-                    txtBlock5.Visibility = Visibility.Collapsed;
                     txtBox1.Visibility = Visibility.Visible;
                     txtBox2.Visibility = Visibility.Visible;
                     txtBox3.Visibility = Visibility.Visible;
                     txtBox4.Visibility = Visibility.Visible;
-                    txtBox5.Visibility = Visibility.Collapsed;
                     figureConfirmButton.Visibility = Visibility.Visible;
                     break;
                 case "ell":
@@ -371,12 +357,10 @@ namespace SummerPractice2020
                     txtBlock3.Visibility = Visibility.Visible;
                     txtBlock4.Text = "Малая п-ось: ";
                     txtBlock4.Visibility = Visibility.Visible;
-                    txtBlock5.Visibility = Visibility.Visible;
                     txtBox1.Visibility = Visibility.Visible;
                     txtBox2.Visibility = Visibility.Visible;
                     txtBox3.Visibility = Visibility.Visible;
                     txtBox4.Visibility = Visibility.Visible;
-                    txtBox5.Visibility = Visibility.Visible;
                     figureConfirmButton.Visibility = Visibility.Visible;
                     break;
                 default:
@@ -411,6 +395,11 @@ namespace SummerPractice2020
         private void AllNum_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !IsTextAllowed(e.Text, -1);
+        }
+
+        private void ClearButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ClearCanvas();
         }
     }
 }

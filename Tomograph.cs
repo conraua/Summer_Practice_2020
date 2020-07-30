@@ -81,7 +81,7 @@ namespace SummerPractice2020
             {
                 if (Math.Pow((r.x - figure.x), 2) / (figure.a * figure.a) + 
                         Math.Pow((r.y - figure.y), 2) / (figure.b * figure.b) - 
-                            figure.r * figure.r <= 0)
+                            1 <= 0)
                 {
                     return 1.536;
                 }
