@@ -295,7 +295,7 @@ namespace SummerPractice2020
                 {
                     double val = Values[i][j] - minValue;
                     byte shade = (byte) (255 * val / (maxValue - minValue));
-                    DrawPoint(j + (400 - Values[i].Count / 2), i * 4 - 200, 4, shade);
+                    DrawPoint(i * stepX - 200 - 2, j * stepY + ((400 - Values[i].Count * stepY) / 2) - 200, 4, shade);
                 }
             }
             // for (int i = -200; i < 200; i += stepX)
