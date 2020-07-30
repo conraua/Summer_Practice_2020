@@ -165,7 +165,7 @@ namespace SummerPractice2020
                     try
                     {
                         tomValues = JsonConvert.DeserializeObject<List<List<double>>>(json);
-                        indFigButton.Visibility = Visibility.Collapsed;
+                        indFigButton.Visibility = Visibility.Hidden;
                         indFileButton.Visibility = Visibility.Visible;
                     }
                     catch (JsonException _e)
@@ -295,7 +295,7 @@ namespace SummerPractice2020
             tm.CalculateRadiationDensity();
             tomValues = tm.H;
             indFigButton.Visibility = Visibility.Visible;
-            indFileButton.Visibility = Visibility.Collapsed;
+            indFileButton.Visibility = Visibility.Hidden;
         }
 
         private void IndFigButton_OnClick(object sender, RoutedEventArgs e)
@@ -457,7 +457,7 @@ namespace SummerPractice2020
         private void ClearButton_OnClick(object sender, RoutedEventArgs e)
         {
             ClearCanvas();
-            clearButton.Visibility = Visibility.Collapsed;
+            clearButton.Visibility = Visibility.Hidden;
         }
         
         private void DrawButton_OnClick(object sender, RoutedEventArgs e)
@@ -493,7 +493,7 @@ namespace SummerPractice2020
             }
 
             clearButton.Visibility = Visibility.Visible;
-            drawButton.Visibility = Visibility.Collapsed;
+            drawButton.Visibility = Visibility.Hidden;
         }
     }
 }
