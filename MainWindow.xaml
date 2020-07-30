@@ -10,7 +10,7 @@
         MinHeight="720" 
         MinWidth="1280" 
         WindowStartupLocation="CenterScreen" 
-        ResizeMode="NoResize">
+        ResizeMode="CanMinimize">
     
     <StackPanel>
         <Menu>

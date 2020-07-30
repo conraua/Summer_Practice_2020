@@ -23,6 +23,7 @@ namespace SummerPractice2020
     public partial class MainWindow
     {
         private bool darkTheme = false;
+        private bool infoShown = false;
         private string colorMode = "Gray";
         private Figure figure = new Figure();
         private int stepX = 4;
@@ -146,13 +147,29 @@ namespace SummerPractice2020
         }
         private void Info_OnClick(object sender, RoutedEventArgs e)
         {
-            Window window = new Window();
-            Grid grid = new Grid();
-            window.Content = grid;
-            TextBlock txtBlock = new TextBlock();
-            txtBlock.Text = "Меня забыли изменить";
-            grid.Children.Add(txtBlock);
-            window.Show();
+            if (!infoShown)
+            {
+                Window window = new Window();
+                window.Title = "Справ04ка";
+                window.Height = 200;
+                window.Width = 500;
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                window.Closing += (_s, _e) =>
+                {
+                    infoShown = false;
+                };
+                Grid grid = new Grid();
+                window.Content = grid;
+                TextBlock txtBlock = new TextBlock();
+                txtBlock.HorizontalAlignment = HorizontalAlignment.Center;
+                txtBlock.VerticalAlignment = VerticalAlignment.Center;
+                txtBlock.Text = "Я - проект на летней практике трех студентов ДВФУ" +
+                                "\nМеня создали Ли Максим, Лебедева Ольга и Никифоров Данил" +
+                                "\nИм не хватило времени и фантазии, чтобы наполнить меня информацией(";
+                grid.Children.Add(txtBlock);
+                window.Show();
+            }
+            infoShown = true;
         }
         private void OpenFile_OnClick(object sender, RoutedEventArgs e) 
         {
@@ -212,12 +229,24 @@ namespace SummerPractice2020
         {
             if (darkTheme)
             {
-                mainWindow.Background = Brushes.White;
+                Brush brushBackground = new SolidColorBrush(Colors.White);
+                Brush brushText = new SolidColorBrush(Colors.Black);
+                mainWindow.Background = brushBackground;
+                txtBlock1.Foreground = brushText;
+                txtBlock2.Foreground = brushText;
+                txtBlock3.Foreground = brushText;
+                txtBlock4.Foreground = brushText;
                 darkThemeMenuItem.Icon = null;
             }
             else
             {
-                mainWindow.Background = Brushes.DarkGray;
+                Brush brushBackground = new SolidColorBrush(Colors.DimGray);
+                Brush brushText = new SolidColorBrush(Colors.LightGray);
+                mainWindow.Background = brushBackground;
+                txtBlock1.Foreground = brushText;
+                txtBlock2.Foreground = brushText;
+                txtBlock3.Foreground = brushText;
+                txtBlock4.Foreground = brushText;
                 darkThemeMenuItem.Icon = new Ellipse()
                 {
                     Stroke = Brushes.Black,
