@@ -310,7 +310,7 @@ namespace SummerPractice2020
 
         private void IndFileButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Indicator id = new Indicator(tm);
+            Indicator id = new Indicator(tomValues);
             id.CalculateHeterogenityIndicator();
             indValues = id.IndicatorValues;
             Nx = id.Nx;
