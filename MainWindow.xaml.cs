@@ -204,6 +204,7 @@ namespace SummerPractice2020
                 }
                 var file = File.Create(saveFileDialog.FileName);
                 file.Write(fileout, 0, output.Length);
+                file.Close();
             }
         }
 
@@ -304,6 +305,7 @@ namespace SummerPractice2020
             indValues = id.IndicatorValues;
             Nx = id.Nx;
             Ny = id.Ny;
+            drawButton.Visibility = Visibility.Visible;
         }
 
         private void IndFileButton_OnClick(object sender, RoutedEventArgs e)
@@ -313,6 +315,7 @@ namespace SummerPractice2020
             indValues = id.IndicatorValues;
             Nx = id.Nx;
             Ny = id.Ny;
+            drawButton.Visibility = Visibility.Visible;
         }
         
         private void FigureConfirmButton_OnClick(object sender, RoutedEventArgs e)
@@ -454,6 +457,7 @@ namespace SummerPractice2020
         private void ClearButton_OnClick(object sender, RoutedEventArgs e)
         {
             ClearCanvas();
+            clearButton.Visibility = Visibility.Collapsed;
         }
         
         private void DrawButton_OnClick(object sender, RoutedEventArgs e)
@@ -487,6 +491,9 @@ namespace SummerPractice2020
                         j * stepY + ((400 - indValues[i].Count * stepY) / 2) - 200, 4, shade);
                 }
             }
+
+            clearButton.Visibility = Visibility.Visible;
+            drawButton.Visibility = Visibility.Collapsed;
         }
     }
 }
