@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -22,15 +23,17 @@ namespace SummerPractice2020
     public partial class MainWindow
     {
         private bool darkTheme = false;
-        private bool fullScreen = false;
         private string colorMode = "Gray";
         private Figure figure = new Figure();
         private int stepX = 4;
         private int stepY = 4;
+        private int Nx = 0;
+        private int Ny = 0;
         private Tomograph tm = new Tomograph();
         private static readonly Regex posNums = new Regex("[^0-9,]+");
         private static readonly Regex allNums = new Regex("[^0-9,-]+");
-        private List<List<double>> Values = new List<List<double>>();
+        private List<List<double>> indValues = new List<List<double>>();
+        private List<List<double>> tomValues = new List<List<double>>();
         public MainWindow()
         {
             InitializeComponent();
@@ -42,6 +45,38 @@ namespace SummerPractice2020
                 Height = 5
             };
         }
+        
+        public void ExportToPng(Uri path, Canvas surface)
+        {
+            if (path == null) return;
+
+            Transform transform = surface.LayoutTransform;
+            surface.LayoutTransform = null;
+
+            Size size = new Size(surface.Width, surface.Height);
+            surface.Measure(size);
+            surface.Arrange(new Rect(size));
+
+            RenderTargetBitmap renderBitmap = 
+                new RenderTargetBitmap(
+                    (int)size.Width, 
+                    (int)size.Height, 
+                    96d, 
+                    96d, 
+                    PixelFormats.Pbgra32);
+            renderBitmap.Render(surface);
+
+            using (FileStream outStream = new FileStream(path.LocalPath, FileMode.Create))
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+                encoder.Save(outStream);
+            }
+
+            surface.LayoutTransform = transform;
+            surface.Margin = new Thickness(455, 10, 0, 0);
+        }
+        
         private static bool IsTextAllowed(string text, int sign)
         {
             if (sign == 1)
@@ -111,29 +146,14 @@ namespace SummerPractice2020
         }
         private void Info_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            Window window = new Window();
+            Grid grid = new Grid();
+            window.Content = grid;
+            TextBlock txtBlock = new TextBlock();
+            txtBlock.Text = "Меня забыли изменить";
+            grid.Children.Add(txtBlock);
+            window.Show();
         }
-        private void FullScreen_OnClick(object sender, RoutedEventArgs e) //TODO change canvas size
-        {
-            if (fullScreen)
-            {
-                mainWindow.WindowState = WindowState.Normal;
-                fullScreenMenuItem.Icon = null;
-            }
-            else
-            {
-                mainWindow.WindowState = WindowState.Maximized;
-                fullScreenMenuItem.Icon = new Ellipse()
-                {
-                    Stroke = Brushes.Black,
-                    Fill = Brushes.Black,
-                    Width = 5,
-                    Height = 5
-                };
-            }
-            fullScreen = !fullScreen;
-        }
-
         private void OpenFile_OnClick(object sender, RoutedEventArgs e) 
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -144,7 +164,9 @@ namespace SummerPractice2020
                     string json = File.ReadAllText(path);
                     try
                     {
-                        Values = JsonConvert.DeserializeObject<List<List<double>>>(json);
+                        tomValues = JsonConvert.DeserializeObject<List<List<double>>>(json);
+                        indFigButton.Visibility = Visibility.Collapsed;
+                        indFileButton.Visibility = Visibility.Visible;
                     }
                     catch (JsonException _e)
                     {
@@ -152,6 +174,36 @@ namespace SummerPractice2020
                                                 MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
+            }
+        }
+        
+        private void SaveImage_OnClick(object sender, RoutedEventArgs e) 
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Image (*.png)|*.png";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                ExportToPng(new Uri(saveFileDialog.FileName, UriKind.Absolute), canvas);
+            }
+        }
+
+        private void SaveJson_OnClick(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "JSON file (*.json)|*.json";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                
+                string output = JsonConvert.SerializeObject(tomValues);
+                byte[] fileout = new byte[output.Length];
+                int k = 0;
+                foreach (var letter in output)
+                {
+                    fileout[k] = (byte) letter;
+                    k++;
+                }
+                var file = File.Create(saveFileDialog.FileName);
+                file.Write(fileout, 0, output.Length);
             }
         }
 
@@ -236,53 +288,33 @@ namespace SummerPractice2020
             colorMode = "Blue";
         }
 
-        private void ConfirmButton_OnClick(object sender, RoutedEventArgs e)
+        private void TomButton_OnClick(object sender, RoutedEventArgs e)
         {
+            tm.figure = figure;
             tm.CalculateRadiationDensity();
-            string output = JsonConvert.SerializeObject(tm.H);
-            byte[] fileout = new byte[output.Length];
-            int k = 0;
-            foreach (var letter in output)
-            {
-                fileout[k] = (byte)letter;
-                k++;
-            }
-            var file = File.Create("2.json");
-            file.Write(fileout, 0, output.Length);
-            
-            Indicator id = new Indicator(tm);
-            id.CalculateHeterogenityIndicator();
-            Values = id.IndicatorValues;
-            stepX = 400 / id.Nx;
-            stepY = 400 / id.Ny;
-            double minValue = double.MaxValue;
-            double maxValue = double.MinValue;
-            for (int i = 0; i < Values.Count; i++)
-            {
-                for (int j = 0; j < Values[i].Count; j++)
-                {
-                    if (Values[i][j] < minValue)
-                    {
-                        minValue = Values[i][j];
-                    }
-                    if (Values[i][j] > maxValue)
-                    {
-                        maxValue = Values[i][j];
-                    }
-                }
-            }
-
-            for (int i = 0; i < Values.Count; i++)
-            {
-                for (int j = 0; j < Values[i].Count; j++)
-                {
-                    double val = Values[i][j] - minValue;
-                    byte shade = (byte) (255 * val / (maxValue - minValue));
-                    DrawPoint(i * stepX - 200 - 2, j * stepY + ((400 - Values[i].Count * stepY) / 2) - 200, 4, shade);
-                }
-            }
+            tomValues = tm.H;
+            indFigButton.Visibility = Visibility.Visible;
+            indFileButton.Visibility = Visibility.Collapsed;
         }
 
+        private void IndFigButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Indicator id = new Indicator(tm);
+            id.CalculateHeterogenityIndicator();
+            indValues = id.IndicatorValues;
+            Nx = id.Nx;
+            Ny = id.Ny;
+        }
+
+        private void IndFileButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Indicator id = new Indicator(tm);
+            id.CalculateHeterogenityIndicator();
+            indValues = id.IndicatorValues;
+            Nx = id.Nx;
+            Ny = id.Ny;
+        }
+        
         private void FigureConfirmButton_OnClick(object sender, RoutedEventArgs e)
         {
             double x = 0.0, y = 0.0, a = 0.0, b = 0.0;
@@ -309,28 +341,50 @@ namespace SummerPractice2020
             if (txtBox3.Text != "")
             {
                 a = double.Parse(txtBox3.Text);
-                if (a < -1 || a > 1)
+                if (figure.name == "Rectangle")
                 {
-                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                    return;
+                    if (a < -2 || a > 2)
+                    {
+                        MessageBox.Show("Введите значения от -2 до 2", "Ошибка", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    if (a < -1 || a > 1)
+                    {
+                        MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                        return;
+                    }
                 }
             }
             if (txtBox4.Text != "")
             {
                 b = double.Parse(txtBox4.Text);
-                if (b < -1 || b > 1)
+                if (b < -2 || b > 2)
                 {
-                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                    MessageBox.Show("Введите значения от -2 до 2", "Ошибка", MessageBoxButton.OK,
                         MessageBoxImage.Error);
                     return;
                 }
+                else
+                {
+                    if (b < -1 || b > 1)
+                    {
+                        MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                        return;
+                    }
+                }
             }
+
+            tomButton.Visibility = Visibility.Visible;
             this.figure.x = x;
             this.figure.y = -y;
             this.figure.a = a;
             this.figure.b = b;
-            tm.figure = this.figure;
         }
 
         private void AddTextBoxes(string fig)
@@ -400,6 +454,39 @@ namespace SummerPractice2020
         private void ClearButton_OnClick(object sender, RoutedEventArgs e)
         {
             ClearCanvas();
+        }
+        
+        private void DrawButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            stepX = 400 / Nx;
+            stepY = 400 / Ny;
+            double minValue = double.MaxValue;
+            double maxValue = double.MinValue;
+            for (int i = 0; i < indValues.Count; i++)
+            {
+                for (int j = 0; j < indValues[i].Count; j++)
+                {
+                    if (indValues[i][j] < minValue)
+                    {
+                        minValue = indValues[i][j];
+                    }
+                    if (indValues[i][j] > maxValue)
+                    {
+                        maxValue = indValues[i][j];
+                    }
+                }
+            }
+
+            for (int i = 0; i < indValues.Count; i++)
+            {
+                for (int j = 0; j < indValues[i].Count; j++)
+                {
+                    double val = indValues[i][j] - minValue;
+                    byte shade = (byte) (255 * val / (maxValue - minValue));
+                    DrawPoint(i * stepX - 200 - 2, 
+                        j * stepY + ((400 - indValues[i].Count * stepY) / 2) - 200, 4, shade);
+                }
+            }
         }
     }
 }

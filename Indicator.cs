@@ -33,6 +33,16 @@ namespace SummerPractice2020
             Ny = Ny1;
             calculateGradient(tm.H);
         }
+        
+        public Indicator(List<List<double>> H, int Nx1 = 100, int Ny1 = 100)
+        {
+            Nphi = 100;
+            Nr = 100;
+            Nx = Nx1;
+            Ny = Ny1;
+            calculateGradient(H);
+        }
+        
         private double Ind(Pair r)
         {
             double sum = 0.0;
