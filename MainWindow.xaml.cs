@@ -28,10 +28,13 @@ namespace SummerPractice2020
         private string colorMode = "Gray";
         private int stepX = 4;
         private int stepY = 4;
+        
         private List<List<double>> Values = new List<List<double>>();
         public MainWindow()
         {
             InitializeComponent();
+            figureOption.SelectedIndex = 0;
+            figureOption.Text = "Выберите фигуру";
             grayColorMenuItem.Icon = new Ellipse()
             {
                 Stroke = Brushes.Black,
@@ -250,6 +253,20 @@ namespace SummerPractice2020
                 Height = 5
             };
             colorMode = "Blue";
+        }
+
+        private void TestButton_OnClick(object sender, RoutedEventArgs e) {
+            TextBox txt = new TextBox();
+            txt.Name = "textBox";
+            txt.Text = "test input";
+            txt.Width = 100;
+            txt.Height = 40;
+            Thickness margin = txt.Margin;
+            margin.Bottom = 280;
+            margin.Right = 186;
+            txt.Margin = margin;
+            grid1.Children.Add(txt);
+            grid1.RegisterName(txt.Name, txt);
         }
 
         private void ConfirmButton_OnClick(object sender, RoutedEventArgs e)
