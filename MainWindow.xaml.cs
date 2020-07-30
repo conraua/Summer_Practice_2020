@@ -291,6 +291,7 @@ namespace SummerPractice2020
 
         private void TomButton_OnClick(object sender, RoutedEventArgs e)
         {
+            tm.H.Clear();
             tm.figure = figure;
             tm.CalculateRadiationDensity();
             tomValues = tm.H;
@@ -307,7 +308,6 @@ namespace SummerPractice2020
             Ny = id.Ny;
             drawButton.Visibility = Visibility.Visible;
         }
-
         private void IndFileButton_OnClick(object sender, RoutedEventArgs e)
         {
             Indicator id = new Indicator(tomValues);
