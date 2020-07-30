@@ -16,6 +16,14 @@ namespace SummerPractice2020
         public Pair eta = new Pair();
         public Pair distance = new Pair();
         public List<List<double>> H = new List<List<double>>();
+        public Figure figure = new Figure();
+        public Tomograph(Figure fig, int Nphi1 = 100, int Nr1 = 100)
+        {
+            figure = fig;
+            Nphi = Nphi1;
+            Nr = Nr1;
+        }
+        
         public Tomograph(int Nphi1 = 100, int Nr1 = 100)
         {
             Nphi = Nphi1;
@@ -59,12 +67,27 @@ namespace SummerPractice2020
 
         public double Mu(Pair r)
         {
-            // if (Math.Pow((r.x - 0.5), 2) + Math.Pow((r.y - 0.5), 2) - 0.04 <= 0)
-            if (r.x > -0.2 && r.x < 0.2 && r.y > -0.2 && r.y < 0.2)
+            if (figure.name == "Rectangle")
             {
-                return 1.053;
+                if (r.x > figure.x - figure.a / 2 && r.x < figure.x + figure.a / 2 && 
+                    r.y > figure.y - figure.b / 2 && r.y < figure.y + figure.b / 2)
+                {
+                    return 1.536;
+                }
+
+                return 0.0351;
             }
-            return 0.0361;
+            else
+            {
+                if (Math.Pow((r.x - figure.x), 2) / (figure.a * figure.a) + 
+                        Math.Pow((r.y - figure.y), 2) / (figure.b * figure.b) - 
+                            figure.r * figure.r <= 0)
+                {
+                    return 1.536;
+                }
+
+                return 0.0351;
+            }
         }
     }
 }

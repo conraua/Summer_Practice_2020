@@ -23,18 +23,17 @@ namespace SummerPractice2020
     {
         private bool darkTheme = false;
         private bool fullScreen = false;
-        private bool infoShown = false;
-        private bool meshDrawn = false;
         private string colorMode = "Gray";
+        private Figure figure = new Figure();
         private int stepX = 4;
         private int stepY = 4;
-        
+        private Tomograph tm = new Tomograph();
+        private static readonly Regex posNums = new Regex("[^0-9,]+");
+        private static readonly Regex allNums = new Regex("[^0-9,-]+");
         private List<List<double>> Values = new List<List<double>>();
         public MainWindow()
         {
             InitializeComponent();
-            figureOption.SelectedIndex = 0;
-            figureOption.Text = "Выберите фигуру";
             grayColorMenuItem.Icon = new Ellipse()
             {
                 Stroke = Brushes.Black,
@@ -43,7 +42,17 @@ namespace SummerPractice2020
                 Height = 5
             };
         }
-
+        private static bool IsTextAllowed(string text, int sign)
+        {
+            if (sign == 1)
+            {
+                return !posNums.IsMatch(text);
+            }
+            else
+            {
+                return !allNums.IsMatch(text);
+            }
+        }
         public void DrawPoint(int x, int y, int width, byte shade)
         {
             if (x*x + y*y <= 40000)
@@ -102,44 +111,8 @@ namespace SummerPractice2020
         }
         private void Info_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!infoShown)
-            {
-                
-            }
-            else
-            {
-                
-            }
-            infoShown = !infoShown;
+            
         }
-
-        private void DrawMesh_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!meshDrawn)
-            {
-                drawMeshMenuItem.Icon = new Ellipse()
-                {
-                    Stroke = Brushes.Black,
-                    Fill = Brushes.Black,
-                    Width = 5,
-                    Height = 5
-                };
-                for (int i = 0; i < 400; i += stepX)
-                {
-                    for (int j = 0; j < 400; j += stepY)
-                    {
-                        DrawPoint(i - 200, j - 200, 2, 255);
-                    }
-                }
-            }
-            else
-            {
-                drawMeshMenuItem.Icon = null;
-                ClearCanvas();
-            }
-            meshDrawn = !meshDrawn;
-        }
-
         private void FullScreen_OnClick(object sender, RoutedEventArgs e) //TODO change canvas size
         {
             if (fullScreen)
@@ -169,7 +142,15 @@ namespace SummerPractice2020
                 string path = openFileDialog.FileName;
                 if (File.Exists(path)) {
                     string json = File.ReadAllText(path);
-                    Values = JsonConvert.DeserializeObject<List<List<double>>>(json);
+                    try
+                    {
+                        Values = JsonConvert.DeserializeObject<List<List<double>>>(json);
+                    }
+                    catch (JsonException _e)
+                    {
+                        MessageBox.Show("Неверный формат файла", "Ошибка", 
+                                                MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -255,23 +236,9 @@ namespace SummerPractice2020
             colorMode = "Blue";
         }
 
-        private void TestButton_OnClick(object sender, RoutedEventArgs e) {
-            TextBox txt = new TextBox();
-            txt.Name = "textBox";
-            txt.Text = "test input";
-            txt.Width = 100;
-            txt.Height = 40;
-            Thickness margin = txt.Margin;
-            margin.Bottom = 280;
-            margin.Right = 186;
-            txt.Margin = margin;
-            grid1.Children.Add(txt);
-            grid1.RegisterName(txt.Name, txt);
-        }
-
         private void ConfirmButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Tomograph tm = new Tomograph();
+            ClearCanvas();
             tm.CalculateRadiationDensity();
             string output = JsonConvert.SerializeObject(tm.H);
             byte[] fileout = new byte[output.Length];
@@ -315,17 +282,135 @@ namespace SummerPractice2020
                     DrawPoint(i * stepX - 200 - 2, j * stepY + ((400 - Values[i].Count * stepY) / 2) - 200, 4, shade);
                 }
             }
-            // for (int i = -200; i < 200; i += stepX)
-            // {
-            //     for (int j = -200; j < 200; j += stepY)
-            //     {
-            //         int n = (i + 200) / stepX;
-            //         int m = (j + 200) / stepY;
-            //         double val = Values[n][m] - minValue;
-            //         byte shade = (byte) (255 * val / (maxValue - minValue));
-            //         DrawPoint(i, j, 2, shade);
-            //     }
-            // }
+        }
+
+        private void FigureConfirmButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            double x = 0.0, y = 0.0, a = 0.0, b = 0.0, r = 0.0;
+            if (txtBox1.Text != "")
+            {
+                x = double.Parse(txtBox1.Text);
+                if (x < -1 || x > 1)
+                {
+                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+            }
+            if (txtBox2.Text != "")
+            {
+                y = double.Parse(txtBox2.Text);
+                if (y < -1 || y > 1)
+                {
+                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+            }
+            if (txtBox3.Text != "")
+            {
+                a = double.Parse(txtBox3.Text);
+                if (a < -1 || a > 1)
+                {
+                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+            }
+            if (txtBox4.Text != "")
+            {
+                b = double.Parse(txtBox4.Text);
+                if (b < -1 || b > 1)
+                {
+                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+            }
+            if (txtBox5.Text != "")
+            {
+                r = double.Parse(txtBox5.Text);
+                if (r < -1 || r > 1)
+                {
+                    MessageBox.Show("Введите значения от -1 до 1", "Ошибка", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+            }
+            this.figure.x = x;
+            this.figure.y = y;
+            this.figure.a = a;
+            this.figure.b = b;
+            this.figure.r = r;
+            tm.figure = this.figure;
+        }
+
+        private void AddTextBoxes(string fig)
+        {
+            switch (fig)
+            {
+                case "rec":
+                    txtBlock1.Visibility = Visibility.Visible;
+                    txtBlock2.Visibility = Visibility.Visible;
+                    txtBlock3.Text = "Длина: ";
+                    txtBlock3.Visibility = Visibility.Visible;
+                    txtBlock4.Text = "Ширина: ";
+                    txtBlock4.Visibility = Visibility.Visible;
+                    txtBlock5.Visibility = Visibility.Collapsed;
+                    txtBox1.Visibility = Visibility.Visible;
+                    txtBox2.Visibility = Visibility.Visible;
+                    txtBox3.Visibility = Visibility.Visible;
+                    txtBox4.Visibility = Visibility.Visible;
+                    txtBox5.Visibility = Visibility.Collapsed;
+                    figureConfirmButton.Visibility = Visibility.Visible;
+                    break;
+                case "ell":
+                    txtBlock1.Visibility = Visibility.Visible;
+                    txtBlock2.Visibility = Visibility.Visible;
+                    txtBlock3.Text = "Большая п-ось: ";
+                    txtBlock3.Visibility = Visibility.Visible;
+                    txtBlock4.Text = "Малая п-ось: ";
+                    txtBlock4.Visibility = Visibility.Visible;
+                    txtBlock5.Visibility = Visibility.Visible;
+                    txtBox1.Visibility = Visibility.Visible;
+                    txtBox2.Visibility = Visibility.Visible;
+                    txtBox3.Visibility = Visibility.Visible;
+                    txtBox4.Visibility = Visibility.Visible;
+                    txtBox5.Visibility = Visibility.Visible;
+                    figureConfirmButton.Visibility = Visibility.Visible;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void FigureOption_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string name = "";
+            List<double> coords = new List<double>();
+            switch (figureOption.SelectedIndex)
+            {
+                case 1:
+                    figure.name = "Rectangle";
+                    AddTextBoxes("rec");
+                    break;
+                case 2:
+                    figure.name = "Ellipse";
+                    AddTextBoxes("ell");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void PosNum_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text, 1);
+        }
+        
+        private void AllNum_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text, -1);
         }
     }
 }

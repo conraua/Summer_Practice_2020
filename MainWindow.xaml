@@ -27,9 +27,6 @@
                 <MenuItem x:Name="fullScreenMenuItem"
                           Header="Полноэкранный режим"
                           Click="FullScreen_OnClick"/>
-                <MenuItem x:Name="drawMeshMenuItem"
-                          Header="Отобразить сетку"
-                          Click="DrawMesh_OnClick"/>
                 <MenuItem Header="Цвет отрисовки">
                     <MenuItem x:Name="grayColorMenuItem"
                               Header="Серый"
@@ -54,28 +51,92 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid x:Name="grid1" Grid.Column="0" Margin="10, 30, 0, 0">
+                <ComboBox x:Name="figureOption" 
+                          Height="30" 
+                          VerticalAlignment="Top"
+                          Margin="0, 20, 0, 0"
+                          SelectionChanged="FigureOption_OnSelectionChanged">
+                    <ComboBoxItem IsEnabled="False"
+                                  IsSelected="True">
+                        <TextBlock>Выберите фигуру</TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock>Прямоугольник</TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock>Эллипс</TextBlock>
+                    </ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="txtBlock1"
+                           Text="Центр x: "
+                           Visibility="Collapsed"
+                           Margin="0, 50, 0, 0"/>
+                <TextBlock x:Name="txtBlock2"
+                           Text="Центр y: "
+                           Visibility="Collapsed"
+                           Margin="100, 50, 0, 0"/>
+                <TextBlock x:Name="txtBlock3"
+                           Visibility="Collapsed"
+                           Margin="0, 150, 0, 0"/>
+                <TextBlock x:Name="txtBlock4"
+                           Visibility="Collapsed"
+                           Margin="100, 150, 0, 0"/>
+                <TextBlock x:Name="txtBlock5"
+                           Text="Радиус: "
+                           Visibility="Collapsed"
+                           Margin="200, 150, 0, 0"/>
+                <TextBox x:Name="txtBox1"
+                         Height="20"
+                         Width="30"
+                         Margin="-260, -340, 0, 0"
+                         Text="0,0"
+                         Visibility="Collapsed"
+                         PreviewTextInput="AllNum_OnPreviewTextInput"/>
+                <TextBox x:Name="txtBox2"
+                         Height="20"
+                         Width="30"
+                         Margin="-60, -340, 0, 0"
+                         Text="0,0"
+                         Visibility="Collapsed"
+                         PreviewTextInput="AllNum_OnPreviewTextInput"/>
+                <TextBox x:Name="txtBox3"
+                         Height="20"
+                         Width="30"
+                         Margin="-260, -140, 0, 0"
+                         Text="0,0"
+                         Visibility="Collapsed"
+                         PreviewTextInput="PosNum_OnPreviewTextInput"/>
+                <TextBox x:Name="txtBox4"
+                         Height="20"
+                         Width="30"
+                         Margin="-60, -140, 0, 0"
+                         Text="0,0"
+                         Visibility="Collapsed"
+                         PreviewTextInput="PosNum_OnPreviewTextInput"/>
+                <TextBox x:Name="txtBox5"
+                         Height="20"
+                         Width="30"
+                         Margin="140, -140, 0, 0"
+                         Text="0,0"
+                         Visibility="Collapsed"
+                         PreviewTextInput="PosNum_OnPreviewTextInput"/>
                 <Button x:Name="confirmButton"
-                        Margin="0, 60, 0, 0"
+                        Margin="0, 300, 0, 0"
                         Width="50"
                         Height="20"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         Content="ОК"
                         Click="ConfirmButton_OnClick"/>
-                <Button x:Name="testButton"
-                        Margin="70, 60, 0, 0"
-                        Width="50"
+                <Button x:Name="figureConfirmButton"
+                        Margin="0, 200, 0, 0"
+                        Width="70"
                         Height="20"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Content="тест"
-                        Click="TestButton_OnClick"/>
-                <ComboBox x:Name="figureOption" Height="30" VerticalAlignment="Top"
-                          Margin="0, 20, 0, 0">
-                    <TextBlock>Прямоугольник</TextBlock>
-                    <TextBlock>Треугольник</TextBlock>
-                    <TextBlock>Эллипс</TextBlock>
-                </ComboBox>
+                        Content="Сохранить"
+                        Visibility="Collapsed"
+                        Click="FigureConfirmButton_OnClick"/>
             </Grid>
             <Grid Grid.Column="1" Margin="0, 30, 10, 0">
                 <Canvas x:Name="canvas"
